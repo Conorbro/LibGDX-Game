@@ -16,8 +16,13 @@ public class MainGame implements ApplicationListener {
 
     @Override
     public void create() {
+        TextureManager.load();
         screen = new GameScreen();
         batch = new SpriteBatch();
+        ScreenManager.setScreen(screen);
+    }
+
+    public static void setScreen(Screen screen) {
         ScreenManager.setScreen(screen);
     }
 

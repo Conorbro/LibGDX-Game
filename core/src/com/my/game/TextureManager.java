@@ -5,11 +5,19 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class TextureManager {
 
-    public static Texture PLAYER = new Texture(Gdx.files.internal("player.png"));
-    public static Texture MISSILE = new Texture(Gdx.files.internal("missile.png"));
-    public static Texture ENEMY = new Texture(Gdx.files.internal("enemy.png"));
-    public static Texture GAME_OVER = new Texture(Gdx.files.internal("gameover.png"));
-    public static Texture GAME_WON = new Texture(Gdx.files.internal("gamewon.png"));
+    public static Texture PLAYER;
+    public static Texture MISSILE;
+    public static Texture ENEMY;
+    public static Texture GAME_OVER;
+    public static Texture GAME_WON;
+
+    public static void load() {
+        PLAYER = new Texture(Gdx.files.internal("player.png"));
+        MISSILE = new Texture(Gdx.files.internal("missile.png"));
+        ENEMY = new Texture(Gdx.files.internal("enemy.png"));
+        GAME_OVER = new Texture(Gdx.files.internal("gameover.png"));
+        GAME_WON = new Texture(Gdx.files.internal("gamewon.png"));
+    }
 
 
 }

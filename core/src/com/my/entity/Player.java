@@ -33,11 +33,11 @@ public class Player extends Entity{
             else dir = 2;
         }
 
-        if (dir == 1) {
+        if (dir == 1 && pos.x <= MainGame.WIDTH - texture.getWidth()) {
             setDirection(300, 0);
         }
 
-        else if (dir == 2) {
+        else if (dir == 2 && pos.x >= 0) {
             setDirection(-300, 0);
         }
 

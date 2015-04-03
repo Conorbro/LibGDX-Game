@@ -1,12 +1,13 @@
 package com.my.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.my.camera.OrthoCamera;
 import com.my.game.MainGame;
 import com.my.game.TextureManager;
 
-public class GameOverScreen implements Screen {
+public class GameOverScreen implements Screen  {
 
     private OrthoCamera camera;
     private Texture texture;
@@ -28,21 +29,25 @@ public class GameOverScreen implements Screen {
     @Override
     public void update() {
         camera.update();
+
+        if (Gdx.input.isTouched()) {
+            MainGame.setScreen(new GameScreen());
+        }
+
     }
 
     @Override
     public void render(SpriteBatch sb) {
         sb.setProjectionMatrix(camera.combined);
         sb.begin();
+
         sb.draw(texture, MainGame.WIDTH/2 - texture.getWidth()/2, MainGame.HEIGHT/2 - texture.getHeight()/2);
         sb.end();
-
     }
 
     @Override
     public void resize(int width, int height) {
         camera.resize();
-
     }
 
     @Override

@@ -1,8 +1,10 @@
 package com.my.screen;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.my.camera.OrthoCamera;
 import com.my.entity.EntityManager;
+import com.my.game.TextureManager;
 
 public class GameScreen implements Screen {
 
