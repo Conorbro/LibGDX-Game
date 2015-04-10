@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.my.game.TextureManager;
 
 public abstract class Entity {
 
@@ -13,7 +12,6 @@ public abstract class Entity {
     protected Vector2 pos, direction;
 
     public Entity(Texture texture, Vector2 pos, Vector2 direction) {
-        TextureManager.load();
         this.texture = texture;
         this.pos = pos;
         this.direction = direction;
@@ -36,5 +34,9 @@ public abstract class Entity {
     public void setDirection(float x, float y) {
         direction.set(x, y);
         direction.scl(Gdx.graphics.getDeltaTime());
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
 }

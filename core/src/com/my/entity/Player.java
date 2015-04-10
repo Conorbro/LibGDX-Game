@@ -1,21 +1,22 @@
 package com.my.entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.my.camera.OrthoCamera;
 import com.my.game.MainGame;
+import com.my.game.SoundManager;
 import com.my.game.TextureManager;
 
 public class Player extends Entity{
 
-    private final EntityManager entityManager;
-    private final OrthoCamera camera;
+    private final OrthographicCamera camera;
+    private GameObjects gameObjects;
     private long lastFire;
 
     //Default constructor
-    public Player (Vector2 pos, Vector2 direction, EntityManager entityManager, OrthoCamera camera) {
+    public Player (Vector2 pos, Vector2 direction, OrthographicCamera camera, GameObjects gameObjects) {
         super(TextureManager.PLAYER, pos, direction);
-        this.entityManager = entityManager;
+        this.gameObjects = gameObjects;
         this.camera = camera;
     }
 
@@ -25,20 +26,18 @@ public class Player extends Entity{
 
         int dir= 0;
 
-        if (Gdx.input.isTouched()) {
-            Vector2 touch = camera.unprojectCoordinates(Gdx.input.getX(), Gdx.input.getY());
-            if (touch.x > MainGame.WIDTH/2) {
+            if (Gdx.input.getAccelerometerX() < -1) {
                 dir = 1;
             }
-            else dir = 2;
-        }
+            else if (Gdx.input.getAccelerometerX() > 1) {dir = 2;}
+
 
         if (dir == 1 && pos.x <= MainGame.WIDTH - texture.getWidth()) {
-            setDirection(300, 0);
+            setDirection(250, 0);
         }
 
         else if (dir == 2 && pos.x >= 0) {
-            setDirection(-300, 0);
+            setDirection(-250, 0);
         }
 
         else {
@@ -46,11 +45,12 @@ public class Player extends Entity{
         }
 
         if (Gdx.input.isTouched()) {
-            if (System.currentTimeMillis() - lastFire >= 250) {
-                entityManager.addEntity(new Missile(pos.cpy().add(25, TextureManager.PLAYER.getHeight())));
+            if (System.currentTimeMillis() - lastFire >= 450) {
+                gameObjects.addMissiles(new Missile(pos.cpy().add(25, TextureManager.PLAYER.getHeight())));
+                SoundManager.shoot.play();
                 lastFire = System.currentTimeMillis();
             }
         }
     }
-
 }
+
