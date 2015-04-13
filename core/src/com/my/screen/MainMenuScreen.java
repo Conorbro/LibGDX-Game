@@ -8,32 +8,24 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.my.game.MainGame;
 import com.my.game.TextureManager;
 
-
-public class GameOverScreen implements Screen {
-
-    private MainGame mainGame;
+public class MainMenuScreen implements Screen {
 
     private OrthographicCamera camera;
     private Texture texture;
     private SpriteBatch sb;
+    private MainGame mainGame;
 
-    public GameOverScreen(MainGame mainGame) {
+    public MainMenuScreen(MainGame mainGame) {
         this.mainGame = mainGame;
         sb = new SpriteBatch();
+        camera = new OrthographicCamera();
+        TextureManager.load();
     }
-
-//    public GameOverScreen(boolean won) {
-//        if (won) {
-//            texture = TextureManager.GAME_WON;
-//        }
-//        else texture = TextureManager.GAME_OVER;
-//    }
 
     @Override
     public void show() {
-        camera = new OrthographicCamera();
         camera.setToOrtho(false, 480, 800);
-        texture = TextureManager.GAME_OVER;
+        texture = TextureManager.PLAY;
     }
 
     @Override
@@ -44,6 +36,7 @@ public class GameOverScreen implements Screen {
         sb.draw(texture, MainGame.WIDTH/2 - texture.getWidth()/2, MainGame.HEIGHT/2 - texture.getHeight()/2);
         sb.end();
 
+
         if(Gdx.input.isTouched()) {
             mainGame.getScreen().hide();
             mainGame.setScreen(mainGame.gameScreen);
@@ -53,12 +46,6 @@ public class GameOverScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         camera.setToOrtho(false, 480, 800);
-    }
-
-    @Override
-    public void dispose() {
-        sb.dispose();
-        texture.dispose();
     }
 
     @Override
@@ -74,5 +61,11 @@ public class GameOverScreen implements Screen {
     @Override
     public void hide() {
 
+    }
+
+    @Override
+    public void dispose() {
+        sb.dispose();
+        texture.dispose();
     }
 }

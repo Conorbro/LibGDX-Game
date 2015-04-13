@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.my.entity.GameObjects;
 import com.my.screen.GameOverScreen;
+import com.my.screen.MainMenuScreen;
 
 public class MainGame extends Game implements ApplicationListener {
 
@@ -18,6 +19,7 @@ public class MainGame extends Game implements ApplicationListener {
     public OrthographicCamera camera;
     public GameObjects gameScreen;
     public GameOverScreen gameOverScreen;
+    public MainMenuScreen mainMenuScreen;
     public Screen currentScreen;
     public Texture spriteTexture;
     public Sprite sprite;
@@ -33,12 +35,14 @@ public class MainGame extends Game implements ApplicationListener {
         batch = new SpriteBatch();
         gameOverScreen = new GameOverScreen(this);
         gameScreen = new GameObjects(this);
+        mainMenuScreen = new MainMenuScreen(this);
+        SoundManager.load();
 //        spriteTexture = new Texture(Gdx.files.internal("background.png"));
 //        spriteTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 //        sprite = new Sprite(spriteTexture, 0, 0, 64, 64);
 //        sprite.setSize(480, 800);
 //        scrollTimer = 0.0f;
-        currentScreen = gameScreen;
+        currentScreen = mainMenuScreen;
         setScreen(currentScreen);
     }
 

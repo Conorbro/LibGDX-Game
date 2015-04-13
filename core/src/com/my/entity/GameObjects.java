@@ -34,8 +34,8 @@ public class GameObjects implements Screen{
     public GameObjects(MainGame mainGame) {
         this.mainGame = mainGame;
 
-        SoundManager.music.setLooping(true);
-        SoundManager.music.play();
+//        SoundManager.music.setLooping(true);
+//        SoundManager.music.play();
 
     }
 
@@ -52,8 +52,8 @@ public class GameObjects implements Screen{
         enemyImage = TextureManager.ENEMY;
         playerImage = TextureManager.PLAYER;
 
-        TextureManager.BACKGROUND.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        sprite = new Sprite(TextureManager.BACKGROUND, 0, 0, 64, 64);
+//        TextureManager.BACKGROUND.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+//        sprite = new Sprite(TextureManager.BACKGROUND, 0, 0, 64, 64);
 
         missiles = new Array<Missile>();
         player = new Player(new Vector2(240, 15), new Vector2(0, 0), camera, this);
