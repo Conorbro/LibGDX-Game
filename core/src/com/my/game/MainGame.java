@@ -37,11 +37,6 @@ public class MainGame extends Game implements ApplicationListener {
         gameScreen = new GameObjects(this);
         mainMenuScreen = new MainMenuScreen(this);
         SoundManager.load();
-//        spriteTexture = new Texture(Gdx.files.internal("background.png"));
-//        spriteTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-//        sprite = new Sprite(spriteTexture, 0, 0, 64, 64);
-//        sprite.setSize(480, 800);
-//        scrollTimer = 0.0f;
         currentScreen = mainMenuScreen;
         setScreen(currentScreen);
     }
@@ -50,20 +45,12 @@ public class MainGame extends Game implements ApplicationListener {
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//        scrollTimer+=Gdx.graphics.getDeltaTime();
-//        if(scrollTimer>10.0f) {
-//            scrollTimer = 10.0f;
-//        }
-//
-//        sprite.setV(scrollTimer);
-//        sprite.setV2(scrollTimer+1);
-        camera.update();
+
 
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
         screen.render(0);
-//        sprite.draw(batch);
         batch.end();
 
     }

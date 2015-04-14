@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -26,8 +25,7 @@ public class GameObjects implements Screen{
     private SpriteBatch batch;
     private MainGame mainGame;
     private Player player;
-    private Sprite sprite;
-    private float scrollTimer;
+
 
     private long lastEnemySpawn;
 
@@ -45,15 +43,10 @@ public class GameObjects implements Screen{
         this.camera = mainGame.camera;
         this.batch = mainGame.batch;
 
-        scrollTimer = 0;
-
         //Setup of the Player and the Enemies
         TextureManager.load();
         enemyImage = TextureManager.ENEMY;
         playerImage = TextureManager.PLAYER;
-
-//        TextureManager.BACKGROUND.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-//        sprite = new Sprite(TextureManager.BACKGROUND, 0, 0, 64, 64);
 
         missiles = new Array<Missile>();
         player = new Player(new Vector2(240, 15), new Vector2(0, 0), camera, this);

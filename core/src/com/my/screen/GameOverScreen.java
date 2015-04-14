@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.my.game.MainGame;
+import com.my.game.SoundManager;
 import com.my.game.TextureManager;
 
 
@@ -14,8 +16,10 @@ public class GameOverScreen implements Screen {
     private MainGame mainGame;
 
     private OrthographicCamera camera;
-    private Texture texture;
     private SpriteBatch sb;
+    public Texture spriteTexture;
+    private Sprite sprite;
+    private float scrollTimer;
 
     public GameOverScreen(MainGame mainGame) {
         this.mainGame = mainGame;
@@ -33,18 +37,35 @@ public class GameOverScreen implements Screen {
     public void show() {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 480, 800);
-        texture = TextureManager.GAME_OVER;
+
+        spriteTexture = TextureManager.GAME_OVER;
+        spriteTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        sprite = new Sprite(spriteTexture, 0, 0, spriteTexture.getWidth(), spriteTexture.getHeight());
+        sprite.setSize(spriteTexture.getWidth(), spriteTexture.getHeight());
+        sprite.setPosition(MainGame.WIDTH/2 - spriteTexture.getWidth()/2, MainGame.HEIGHT/2 - spriteTexture.getHeight()/2);
+        scrollTimer = 0.0f;
     }
 
     @Override
     public void render(float delta) {
         camera.update();
         sb.setProjectionMatrix(camera.combined);
+
+        scrollTimer+=Gdx.graphics.getDeltaTime();
+        if(scrollTimer>10.0f) {
+            scrollTimer = 10.0f;
+        }
+
+        sprite.setU(scrollTimer);
+        sprite.setU2(scrollTimer+1);
+        camera.update();
+
         sb.begin();
-        sb.draw(texture, MainGame.WIDTH/2 - texture.getWidth()/2, MainGame.HEIGHT/2 - texture.getHeight()/2);
+        sprite.draw(sb);
         sb.end();
 
-        if(Gdx.input.isTouched()) {
+        //Cool down between game over screen and new game
+        if(Gdx.input.isTouched() && !SoundManager.playerDeather.isPlaying()) {
             mainGame.getScreen().hide();
             mainGame.setScreen(mainGame.gameScreen);
         }
@@ -58,7 +79,7 @@ public class GameOverScreen implements Screen {
     @Override
     public void dispose() {
         sb.dispose();
-        texture.dispose();
+        spriteTexture.dispose();
     }
 
     @Override
