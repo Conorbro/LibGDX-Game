@@ -26,13 +26,6 @@ public class GameOverScreen implements Screen {
         sb = new SpriteBatch();
     }
 
-//    public GameOverScreen(boolean won) {
-//        if (won) {
-//            texture = TextureManager.GAME_WON;
-//        }
-//        else texture = TextureManager.GAME_OVER;
-//    }
-
     @Override
     public void show() {
         camera = new OrthographicCamera();
