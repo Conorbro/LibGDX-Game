@@ -12,7 +12,6 @@ public class Player extends Entity{
     private final OrthographicCamera camera;
     private GameObjects gameObjects;
     private long lastFire;
-
     //Default constructor
     public Player (Vector2 pos, Vector2 direction, OrthographicCamera camera, GameObjects gameObjects) {
         super(TextureManager.PLAYER, pos, direction);
@@ -25,11 +24,10 @@ public class Player extends Entity{
         pos.add(direction);
 
         int dir= 0;
-
-            if (Gdx.input.getAccelerometerX() < -1) {
+            if (Gdx.input.getX() > Gdx.graphics.getWidth()/2) {
                 dir = 1;
             }
-            else if (Gdx.input.getAccelerometerX() > 1) {dir = 2;}
+            else if (Gdx.input.getX() < Gdx.graphics.getWidth()/2) {dir = 2;}
 
 
         if (dir == 1 && pos.x <= MainGame.WIDTH - texture.getWidth()) {
@@ -44,13 +42,33 @@ public class Player extends Entity{
             setDirection(0, 0);
         }
 
+        if(gameObjects.getPowerUpStatus()) {
+            fire(225);
+        }
+
+        else {
+            fire(450);
+        }
+
+    }
+
+    public void fire(long lastFireLimit){
         if (Gdx.input.isTouched()) {
-            if (System.currentTimeMillis() - lastFire >= 450) {
-                gameObjects.addMissiles(new Missile(pos.cpy().add(25, TextureManager.PLAYER.getHeight())));
-                SoundManager.shoot.play();
-                lastFire = System.currentTimeMillis();
-            }
+
+                if (System.currentTimeMillis() - lastFire >= lastFireLimit) {
+
+                    if (!gameObjects.getPowerUpStatus()) {
+                        gameObjects.addMissiles(new Missile(pos.cpy().add(25, TextureManager.PLAYER.getHeight())));
+                    } else {
+                        gameObjects.addMissiles(new Missile(pos.cpy().add(0, TextureManager.PLAYER.getHeight())));
+                        gameObjects.addMissiles(new Missile(pos.cpy().add(50, TextureManager.PLAYER.getHeight())));
+                    }
+
+                    SoundManager.FIRE.play();
+                    lastFire = System.currentTimeMillis();
+                }
         }
     }
+
 }
 

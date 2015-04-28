@@ -8,6 +8,8 @@ import com.my.game.TextureManager;
 
 public class PowerUp extends Entity {
 
+    private boolean activated = false;
+
     PowerUp(Vector2 pos, Vector2 direction) {
         super(TextureManager.POWER_UP, pos, direction);
     }
@@ -27,6 +29,14 @@ public class PowerUp extends Entity {
             return false;
         }
         else return true;
+    }
+
+    public boolean getActivatedStatus() {
+        return activated;
+    }
+
+    public void setActivatedStatus(boolean a) {
+        activated = a;
     }
 
 }

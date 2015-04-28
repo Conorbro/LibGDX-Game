@@ -22,7 +22,7 @@ import java.util.Iterator;
 public class GameObjects implements Screen{
 
     private Animation enemyAnimation;
-    private float timePassed = 0, timeLastPowerUp = 0;
+    private float timePassed = 0, timeLastPowerUp = 0, powerupDuration = 0;
     private Texture playerImage;
     private Texture powerupImage;
     private Array<Enemy> enemies;
@@ -87,12 +87,22 @@ public class GameObjects implements Screen{
         if(missiles.size > 0) {
             for(Missile m : missiles) {
                 batch.draw(m.texture, m.pos.x, m.pos.y);
-                m.pos.y += 4;
+                if(powerUp.getActivatedStatus()) {
+                    m.pos.y += 6;
+                }
+                else {
+                    m.pos.y += 4;
+                }
             }
         }
 
-        // check if we need to create a new enemy
-        if(TimeUtils.millis() - lastEnemySpawn > 1000) {
+        // Spawn Enemies taking into account the powerup status
+        if(powerUp.getActivatedStatus()) {
+            if(TimeUtils.millis() - lastEnemySpawn > 200) {
+                spawnEnemies();
+            }
+        }
+        else if(TimeUtils.millis() - lastEnemySpawn > 1000) {
             spawnEnemies();
         }
         powerUp();
@@ -107,13 +117,21 @@ public class GameObjects implements Screen{
                 if(m.getBounds().overlaps(e.getBounds())) {
                     missiles.removeValue(m, false);
                     enemies.removeValue(e, false);
-                    SoundManager.enemyDeath.play();
+                    SoundManager.ENEMY_DEATH.play();
                     points += 1;
                 }
             }
             if(powerUp.getBounds().overlaps(player.getBounds())) {
                 //Run Power Up
-
+                powerUp.setActivatedStatus(true);
+                SoundManager.POWER_UP_SOUND.play();
+            }
+            if(powerUp.getActivatedStatus()) {
+                powerupDuration += Gdx.graphics.getDeltaTime();
+                if(powerupDuration > 250) {
+                    powerUp.setActivatedStatus(false);
+                    powerupDuration = 0;
+                }
             }
         }
     }
@@ -123,13 +141,13 @@ public class GameObjects implements Screen{
         Iterator<Enemy> iter = enemies.iterator();
         while(iter.hasNext()) {
             Enemy enemy = iter.next();
-            enemy.pos.y -= 200 * Gdx.graphics.getDeltaTime();
+            enemy.pos.y -= 200 * Gdx.graphics.getDeltaTime(); //Should move this up
             if(enemy.pos.y + 64 < 0) {
                 float x = MathUtils.random(0, MainGame.WIDTH - TextureManager.ENEMY.getWidth());
                 enemy.pos.set(x, MainGame.HEIGHT);
             };
             if(enemy.getBounds().overlaps(player.getBounds())) {
-                SoundManager.playerDeather.play();
+                SoundManager.PLAYER_DEATH.play();
                 mainGame.getScreen().hide();
                 mainGame.setScreen(mainGame.gameOverScreen);
             }
@@ -138,6 +156,9 @@ public class GameObjects implements Screen{
                     missiles.removeValue(m, false);
                 }
             }
+        }
+        if(powerUp.getActivatedStatus()) {
+            powerUp.pos = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
     }
 
@@ -151,17 +172,13 @@ public class GameObjects implements Screen{
 
     public void spawnEnemies() {
         Enemy enemy = new Enemy(new Vector2(MathUtils.random(0, 480 - 64), 800), new Vector2(0, 0));
+
         enemies.add(enemy);
         lastEnemySpawn = TimeUtils.millis();
     }
 
     public void addMissiles(Missile missile) {
         missiles.add(missile);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
     }
 
     public void createFonts() {
@@ -175,7 +192,7 @@ public class GameObjects implements Screen{
 
     public void powerUp() {
         //Periodically releases a random power up
-        if((timeLastPowerUp > 10 && powerUp.isOnScreen())) {
+        if((timeLastPowerUp > 10 && powerUp.isOnScreen() && !powerUp.getActivatedStatus())) {
             batch.draw(powerupImage, powerUp.pos.x, powerUp.pos.y);
             powerUp.pos.y -= 8;
         }
@@ -188,6 +205,14 @@ public class GameObjects implements Screen{
         }
 
         powerUp.update();
+    }
+
+    public boolean getPowerUpStatus() {
+        return powerUp.getActivatedStatus();
+    }
+
+    @Override
+    public void resize(int width, int height) {
     }
 
     @Override

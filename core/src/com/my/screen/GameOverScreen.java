@@ -58,7 +58,7 @@ public class GameOverScreen implements Screen {
         sb.end();
 
         //Cool down between game over screen and new game
-        if(Gdx.input.isTouched() && !SoundManager.playerDeather.isPlaying()) {
+        if(Gdx.input.isTouched() && !SoundManager.PLAYER_DEATH.isPlaying()) {
             mainGame.getScreen().hide();
             mainGame.setScreen(mainGame.gameScreen);
         }
