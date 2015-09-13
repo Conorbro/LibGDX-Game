@@ -13,6 +13,7 @@ public class TextureManager {
     public static Texture GAME_OVER;
     public static Texture PLAY;
     public static Texture POWER_UP;
+    public static Texture ASTEROID;
     public static Animation ENEMY_ANIMATION;
     public static TextureAtlas ENEMY_ATLAS;
 
@@ -24,6 +25,7 @@ public class TextureManager {
         GAME_OVER = new Texture(Gdx.files.internal("gameover.png"));
         PLAY = new Texture(Gdx.files.internal("play.png"));
         POWER_UP = new Texture(Gdx.files.internal("power_up.png"));
+        ASTEROID = new Texture(Gdx.files.internal("asteroid.png"));
         ENEMY_ATLAS = new TextureAtlas(Gdx.files.internal("enemy_animation.atlas"));
         ENEMY_ANIMATION = new Animation(1/15f, ENEMY_ATLAS.getRegions());
     }

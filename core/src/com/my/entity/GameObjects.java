@@ -17,6 +17,7 @@ import com.my.game.MainGame;
 import com.my.game.SoundManager;
 import com.my.game.TextureManager;
 
+import java.sql.Time;
 import java.util.Iterator;
 
 public class GameObjects implements Screen{
@@ -24,8 +25,10 @@ public class GameObjects implements Screen{
     private Animation enemyAnimation;
     private float timePassed = 0, timeLastPowerUp = 0, powerupDuration = 0;
     private Texture playerImage;
+    private Texture asteroidImage;
     private Texture powerupImage;
     private Array<Enemy> enemies;
+    private Array<Asteroid> asteroids;
     private Array<Missile> missiles;
     private OrthographicCamera camera;
     private SpriteBatch batch;
@@ -36,6 +39,7 @@ public class GameObjects implements Screen{
     private int points;
 
     private long lastEnemySpawn;
+    private long lastAsteroidSpawn;
 
     public GameObjects(MainGame mainGame) {
         this.mainGame = mainGame;
@@ -56,6 +60,7 @@ public class GameObjects implements Screen{
         TextureManager.load();
         powerupImage = TextureManager.POWER_UP;
         playerImage = TextureManager.PLAYER;
+        asteroidImage = TextureManager.ASTEROID;
         enemyAnimation = TextureManager.ENEMY_ANIMATION;
 
         score = new BitmapFont();
@@ -64,10 +69,12 @@ public class GameObjects implements Screen{
         missiles = new Array<Missile>();
         player = new Player(new Vector2(240, 15), new Vector2(0, 0), camera, this);
         enemies = new Array<Enemy>();
+        asteroids = new Array<Asteroid>();
         powerUp = new PowerUp(new Vector2(MathUtils.random(0, 480 - 64), 800), new Vector2(0, 0));
 
         clearEnemies();
         spawnEnemies();
+        spawnAsteroids();
     }
 
     @Override
@@ -80,6 +87,9 @@ public class GameObjects implements Screen{
         //Draws Player and Enemies
         for(Entity enemy : enemies) {
             batch.draw(enemyAnimation.getKeyFrame(timePassed, true), enemy.pos.x, enemy.pos.y);
+        }
+        for(Entity asteroid : asteroids) {
+            batch.draw(asteroidImage, asteroid.pos.x, asteroid.pos.y);
         }
         batch.draw(playerImage, player.pos.x, player.pos.y);
         player.update();
@@ -98,12 +108,16 @@ public class GameObjects implements Screen{
 
         // Spawn Enemies taking into account the powerup status
         if(powerUp.getActivatedStatus()) {
-            if(TimeUtils.millis() - lastEnemySpawn > 200) {
+            if(TimeUtils.millis() - lastEnemySpawn > 600) {
                 spawnEnemies();
+            }
+            if(TimeUtils.millis() - lastAsteroidSpawn > 500) {
+                spawnAsteroids();
             }
         }
         else if(TimeUtils.millis() - lastEnemySpawn > 1000) {
             spawnEnemies();
+            spawnAsteroids();
         }
         powerUp();
         removeObjects();
@@ -117,6 +131,14 @@ public class GameObjects implements Screen{
                 if(m.getBounds().overlaps(e.getBounds())) {
                     missiles.removeValue(m, false);
                     enemies.removeValue(e, false);
+                    SoundManager.ENEMY_DEATH.play();
+                    points += 2;
+                }
+            }
+            for (Asteroid a : asteroids) {
+                if(m.getBounds().overlaps(a.getBounds())) {
+                    missiles.removeValue(m, false);
+                    asteroids.removeValue(a, false);
                     SoundManager.ENEMY_DEATH.play();
                     points += 1;
                 }
@@ -139,6 +161,7 @@ public class GameObjects implements Screen{
     public void removeObjects() {
 
         Iterator<Enemy> iter = enemies.iterator();
+        Iterator<Asteroid> iterAsteroid = asteroids.iterator();
         while(iter.hasNext()) {
             Enemy enemy = iter.next();
             enemy.pos.y -= 200 * Gdx.graphics.getDeltaTime(); //Should move this up
@@ -157,6 +180,18 @@ public class GameObjects implements Screen{
                 }
             }
         }
+        for(Asteroid a : asteroids) {
+            a.pos.y -= 200 * Gdx.graphics.getDeltaTime(); //Should move this up
+            if(a.pos.y + 64 < 0) {
+                float x = MathUtils.random(0, MainGame.WIDTH - TextureManager.ASTEROID.getWidth());
+                a.pos.set(x, MainGame.HEIGHT);
+            }
+            if(a.getBounds().overlaps(player.getBounds())) {
+                SoundManager.PLAYER_DEATH.play();
+                mainGame.getScreen().hide();
+                mainGame.setScreen(mainGame.gameOverScreen);
+            }
+        }
         if(powerUp.getActivatedStatus()) {
             powerUp.pos = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
@@ -168,6 +203,10 @@ public class GameObjects implements Screen{
         while (iter.hasNext()) {
             iter.remove();
         }
+//        Iterator<Asteroid> iterAsteroids = asteroids.iterator();
+//        while (iterAsteroids.hasNext()) {
+//            iterAsteroids.remove();
+//        }
     }
 
     public void spawnEnemies() {
@@ -175,6 +214,13 @@ public class GameObjects implements Screen{
 
         enemies.add(enemy);
         lastEnemySpawn = TimeUtils.millis();
+    }
+
+    public void spawnAsteroids() {
+        Asteroid asteroid = new Asteroid(new Vector2(MathUtils.random(0, 480 - 64), 800), new Vector2(0,0));
+
+        asteroids.add(asteroid);
+        lastAsteroidSpawn = TimeUtils.millis();
     }
 
     public void addMissiles(Missile missile) {
